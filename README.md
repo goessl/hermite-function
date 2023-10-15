@@ -18,12 +18,16 @@ plt.show()
 ## Installation
 
 ```
+pip install git+https://github.com/goessl/vector.git
 pip install hermite-function
 ```
 
 ## Usage
 
 This package provides a single class, `HermiteFunction`, to handle Hermite function series.
+
+`HermiteFunction` extends [`Vector`](https://github.com/goessl/vector/blob/main/vector.py) from the [https://github.com/goessl/vector](vector module) and therefore provides the same functionality.
+
 A series can be initialized in three ways:
  - With the constructor `HermiteFunction(coef)`, that takes a non-negative integer to create a pure Hermite function with the given index, or an iterable of coefficients to create a Hermite function series.
  - With the random factory `HermiteFunction.random(deg)` for a random Hermite series of a given degree.
@@ -40,12 +44,13 @@ plt.legend()
 plt.show()
 ```
 ![png](https://raw.githubusercontent.com/goessl/hermite-function/main/readme/initialization.png)
-The container interface is implemented so the coefficients can be
+Container and sequence interfaces are implemented so the coefficients can be
 - accessed by indexing: `f[2]` (coefficients not set return to 0),
 - iterated over: `for c in f` (stops at last set coefficient),
 - counted: `len(f)` (number of set coefficients),
-- compared: `f == g` (tuple of coefficients get compared) &
-- shifted: `f >> 1, f << 2`.
+- compared: `f == g` (tuple of coefficients get compared),
+- shifted: `f >> 1, f << 2` &
+- trimmed: `f.trim()` (trailing non-zero coefficients get removed).
 
 Methods for functions:
 - evaluation with `f(x)`,
@@ -151,3 +156,25 @@ $$
 $$
     \left\langle\frac{-\hat{P}^2}{2}\right\rangle = -\frac{1}{2}\int_{\mathbb{R}}f^*(x)\frac{d^2}{dx^2}f(x)dx = +\frac{1}{2}\int_{\mathbb{R}}|f'(x)|^2dx = \frac{1}{2}||f'||\_{L_{\mathbb{R}}^2}^2
 $$
+
+## License (MIT)
+
+Copyright (c) 2022 Sebastian Gössl
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
