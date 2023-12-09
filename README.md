@@ -1,6 +1,6 @@
 # Hermite Function Series
 
-A Hermite function series package.
+A Hermite function series module.
 ```python
 from hermitefunction import HermiteFunction
 import numpy as np

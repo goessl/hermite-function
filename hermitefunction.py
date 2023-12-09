@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.polynomial.hermite import hermval, hermfit
-from scipy.special import factorial, binom, erf
+from scipy.special import factorial, erf
 from functools import cached_property
 from vector import Vector
 
@@ -16,12 +16,12 @@ class HermiteFunction(Vector):
         return HermiteFunction(Vector.random(deg+1, normed).coef)
     
     @staticmethod
-    def fit(x, y, deg):
+    def fit(X, y, deg):
         """Creates a least squares Hermite function series fit
         with the given degree for the given x and y values."""
         #https://de.wikipedia.org/wiki/Multiple_lineare_Regression
         return HermiteFunction(c * np.sqrt(2**i*factorial(i)*np.sqrt(np.pi))
-                for i, c in enumerate(hermfit(x, y/np.exp(-x**2/2), deg)))
+                for i, c in enumerate(hermfit(X, y/np.exp(-X**2/2), deg)))
     
     
     
@@ -71,16 +71,6 @@ class HermiteFunction(Vector):
         """The kinetic energy of this series."""
         #return -1/2 * self.dot(self.der(2))
         return abs(self.der())**2 / 2
-    
-    
-    
-    
-    
-    #def sympify(self, x=smp.Symbol('x')):
-    #    r = 0
-    #    for n, c in enumerate(self):
-    #        r += c * smp.exp(-x**2/2)/smp.sqrt(2**n * smp.factorial(n)*smp.sqrt(smp.pi)) * smp.functions.special.polynomials.hermite(n, x)
-    #    return r
     
     
     
