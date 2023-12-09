@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.polynomial.hermite import hermval, hermfit
 from scipy.special import factorial, erf
-from functools import cached_property
+from functools import cache, cached_property
 from vector import Vector
 
 
@@ -16,12 +16,22 @@ class HermiteFunction(Vector):
         return HermiteFunction(Vector.random(deg+1, normed).coef)
     
     @staticmethod
+    @cache
+    def _factor(i):
+        return 1 / np.sqrt(2**i*factorial(i)*np.sqrt(np.pi))
+    @staticmethod
+    @cache
+    def _factors(n):
+        return np.fromiter(
+                map(HermiteFunction._factor, range(n)), dtype=np.float_)
+    
+    @staticmethod
     def fit(X, y, deg):
         """Creates a least squares Hermite function series fit
         with the given degree for the given x and y values."""
         #https://de.wikipedia.org/wiki/Multiple_lineare_Regression
-        return HermiteFunction(c * np.sqrt(2**i*factorial(i)*np.sqrt(np.pi))
-                for i, c in enumerate(hermfit(X, y/np.exp(-X**2/2), deg)))
+        return HermiteFunction(hermfit(X, y/np.exp(-X**2/2), deg) /
+                HermiteFunction._factors(deg+1))
     
     
     
@@ -32,17 +42,17 @@ class HermiteFunction(Vector):
         return len(self) - 1
     
     def __call__(self, x):
-        return np.exp(-x**2/2) \
-                * sum(c / np.sqrt(2**i * factorial(i) * np.sqrt(np.pi))
-                * hermval(x, (0,)*i+(1,))
-                for i, c in enumerate(self))
+        if self.coef: #hermval can't handle empty coefficients
+            return np.exp(-x**2/2) * hermval(x,
+                    self.coef * HermiteFunction._factors(len(self)))
+        return 0
     
     def der(self, n=1):
         """Returns the n-th derivative of this series."""
         res = self
+        i = np.arange(len(self)+n)
         for _ in range(n):
-            res = (np.sqrt((i+1)/2) for i in range(len(res)-1)) * (res<<1) \
-                    - (np.sqrt(i/2) for i in range(len(res)+1)) * (res>>1)
+            res = (res<<1) * np.sqrt((i+1)/2) - (res>>1) * np.sqrt(i/2)
         return res
     
     def antider(self):
