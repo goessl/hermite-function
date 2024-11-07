@@ -26,16 +26,15 @@ pip install hermite-function
 
 This package provides a single class, `HermiteFunction`, to handle Hermite function series.
 
-`HermiteFunction` extends [`Vector`](https://github.com/goessl/vector/blob/main/vector.py) from the [https://github.com/goessl/vector](vector module) and therefore provides the same functionality.
+`HermiteFunction` extends [`Vector`](https://github.com/goessl/vector/blob/main/vector.py) from the [vector module](https://github.com/goessl/vector) and therefore provides all Hilbert space operations from coefficient access through indexing, over norm calculation to arithmetic.
 
 A series can be initialized in three ways:
  - With the constructor `HermiteFunction(coef)`, that takes a non-negative integer to create a pure Hermite function with the given index, or an iterable of coefficients to create a Hermite function series.
- - With the random factory `HermiteFunction.random(deg)` for a random Hermite series of a given degree.
- - By fitting data with `HermiteFunction.fit(x, y, deg)`.
-The objects are immutable (coefficients are internally stored in a tuple).
+ - With the random factories `HermiteFunction.rand(deg)` & `HermiteFunction.randn(deg, normed=True)` for a random Hermite function series of a given degree.
+ - By fitting data with `HermiteFunction.fit(X, y, deg)`.
 ```python
 f = HermiteFunction((1, 2, 3))
-g = HermiteFunction.random(15)
+g = HermiteFunction.randn(15)
 h = HermiteFunction.fit(x, g(x), 10)
 plt.plot(x, f(x), label='$f$')
 plt.plot(x, g(x), '--', label='$g$')
@@ -44,13 +43,6 @@ plt.legend()
 plt.show()
 ```
 ![png](https://raw.githubusercontent.com/goessl/hermite-function/main/readme/initialization.png)
-Container and sequence interfaces are implemented so the coefficients can be
-- accessed by indexing: `f[2]` (coefficients not set return to 0),
-- iterated over: `for c in f` (stops at last set coefficient),
-- counted: `len(f)` (number of set coefficients),
-- compared: `f == g` (tuple of coefficients get compared),
-- shifted: `f >> 1, f << 2` &
-- trimmed: `f.trim()` (trailing non-zero coefficients get removed).
 
 Methods for functions:
 - evaluation with `f(x)`,
@@ -68,10 +60,7 @@ plt.legend()
 plt.show()
 ```
 ![png](https://raw.githubusercontent.com/goessl/hermite-function/main/readme/differentiation.png)
-Hilbert space operations are also provided, where the Hermite functions are used as an orthonormal basis of the $L_\mathbb{R}^2$ space:
-- Vector addition & subtraction `f + g, f - g`,
-- scalar multiplication & division `2 * f, f / 2`,
-- inner product & norm `f @ g, abs(f)`.
+Hilbert space operations inherited from [vector](https://github.com/goessl/vector)
 ```python
 g = HermiteFunction(4)
 h = f + g
